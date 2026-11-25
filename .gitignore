@@ -1,0 +1,13 @@
+# dipendenze e file generati
+node_modules/
+scheda_ha/dist/
+scheda_ha/ktx_cache/
+cotto_*/
+__pycache__/
+*.blend1
+.DS_Store
+# sessione di Home Assistant creata da prove/login.mjs: è privata
+prove/sessione-ha.json
+prove/*.png
+# indirizzo e token di Home Assistant (collegamento con la chiave di accesso): privato
+ha_accesso.json

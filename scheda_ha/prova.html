@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Casa 3D</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: var(--lovelace-background, #111418); transition: background-color .8s; color: #e1e1e1; font-family: Roboto, -apple-system, system-ui, sans-serif; }
+  .vista { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 12px; }
+  ha-card { display: block; background: #1c1f24; border-radius: 12px; border: 1px solid #2b2f36; }
+  .finta { padding: 16px; } .alta { height: 600px; }
+  #info { position: fixed; inset: 0; display: none; place-items: center; background: rgba(0,0,0,.5); z-index: 10; }
+  #info.vis { display: grid; }
+  #info div { background: #1c1f24; padding: 24px; border-radius: 24px; min-width: 280px; }
+  #log { font: 12px ui-monospace, monospace; color: #9aa; padding: 8px 16px; white-space: pre; }
+</style>
+</head>
+<body>
+<!-- Pagina di prova SENZA Home Assistant: stati finti presi da casa.config.js, nessun dispositivo vero viene comandato.
+     Avvio: cd dist && python3 -m http.server 8767, poi http://127.0.0.1:8767/prova.html
+     Parametri: ?el=-10 (sera; elevazione del sole), ?accese=3 (quante luci accese all'avvio) -->
+<div class="vista">
+  <ha-card class="finta">Altre schede della dashboard (finte)</ha-card>
+  <casa3d-card id="c"></casa3d-card>
+  <ha-card class="finta alta">Altre schede di HA (per provare lo scorrimento)</ha-card>
+</div>
+<div id="info"><div><b>Finestra nativa di HA (simulata)</b><p id="infoEnt"></p><button onclick="info.classList.remove('vis')">Chiudi</button></div></div>
+<div id="log"></div>
+<script type="module">
+import "./casa3d/casa3d-card.js";
+import CASA from "./prova-config.js";
+const q = new URLSearchParams(location.search);
+const stati = {};
+const st = (e) => stati[e] || (stati[e] = { entity_id: e, state: e.startsWith("media_player.") ? "idle" : e.startsWith("cover.") ? "open" : e.startsWith("sensor.") ? "45" : e.startsWith("lock.") ? "locked" : "off", attributes: { friendly_name: e.split(".")[1].replace(/_/g, " ") } });
+stati["sun.sun"] = { entity_id: "sun.sun", state: "above_horizon", attributes: { elevation: Number(q.get("el") ?? 20) } };
+const luci = Object.values(CASA.entita || {}).filter((e) => e.startsWith("light."));
+for (const e of luci.slice(0, Number(q.get("accese") ?? 3))) Object.assign(st(e), { state: "on", attributes: { ...st(e).attributes, brightness: 200 } });
+for (const [, e] of CASA.segnali || []) st(e);
+// dispositivi finti come quelli che saranno aiutanti in HA: luci dimmerabili, clima, robot, sensore di temperatura
+for (const e of luci) st(e).attributes = { ...st(e).attributes, supported_color_modes: ["brightness"], color_mode: "brightness" };
+for (const e of Object.values(CASA.entita || {}).filter((x) => x.startsWith("climate.")))
+  Object.assign(st(e), { state: "heat", attributes: { friendly_name: e.includes("bagno") ? "Clima bagno" : "Clima zona giorno", temperature: 21, current_temperature: 20.4, min_temp: 7, max_temp: 30, target_temp_step: 0.5, hvac_modes: ["off", "heat", "cool", "auto"], hvac_action: "heating" } });
+Object.assign(st("vacuum.robot_cucina"), { state: "docked", attributes: { friendly_name: "Robot cucina", battery_level: 100 } });
+Object.assign(st("sensor.temperatura_pranzo"), { state: "21.4", attributes: { friendly_name: "Temperatura pranzo", unit_of_measurement: "°C", device_class: "temperature" } });
+// dispositivi in più (come gli aiutanti di HA): elettrodomestici con il loro stato, sensori con un valore
+const finti = {
+  "input_select.lavatrice": ["Centrifuga", { options: ["Ferma", "Lavaggio", "Risciacquo", "Centrifuga", "Finito"] }], "input_select.asciugatrice": ["Ferma", { options: ["Ferma", "Asciugatura", "Finito"] }],
+  "input_select.forno": ["Spento", { options: ["Spento", "Preriscaldamento", "Cottura"] }], "input_select.lavastoviglie": ["Lavaggio", { options: ["Ferma", "Lavaggio", "Asciugatura", "Finito"] }],
+  "switch.macchina_caffe": ["off"], "switch.scaldasalviette": ["on"], "switch.stampante_3d": ["on"], "fan.purificatore_soggiorno": ["on", { percentage: 40 }], "fan.purificatore_studio": ["off", { percentage: 0 }],
+  "media_player.homepod_cucina": ["playing", { volume_level: 0.3 }], "media_player.homepod_soggiorno": ["idle", { volume_level: 0.25 }], "camera.campanello": ["idle"],
+  "sensor.umidita_bagno_ospiti": ["58", { unit_of_measurement: "%", device_class: "humidity" }], "sensor.umidita_bagno_padronale": ["64", { unit_of_measurement: "%", device_class: "humidity" }],
+  "sensor.temperatura_camera": ["19.8", { unit_of_measurement: "°C" }], "sensor.temperatura_studio": ["22.1", { unit_of_measurement: "°C" }],
+  "binary_sensor.movimento_ingresso": ["on", { device_class: "motion" }], "binary_sensor.finestra_camera": ["on", { device_class: "window" }],
+  "climate.camera": ["heat", { friendly_name: "Clima camera", temperature: 20, current_temperature: 19.8, min_temp: 7, max_temp: 30, target_temp_step: 0.5, hvac_modes: ["off", "heat", "cool", "auto"], hvac_action: "heating" }],
+};
+for (const [e, [stato, attr]] of Object.entries(finti)) Object.assign(st(e), { state: stato, attributes: { ...st(e).attributes, ...(attr || {}) } });
+for (const e of Object.values(CASA.entita || {}).filter((x) => x.startsWith("cover."))) st(e).attributes = { ...st(e).attributes, current_position: 100, supported_features: 15 };
+const log = (t) => { const d = document.getElementById("log"); d.textContent = t + "\n" + d.textContent.slice(0, 600); console.log("[prova]", t); };
+const card = document.getElementById("c");
+// le schede di HA non esistono fuori da HA: al loro posto un riquadro con la configurazione
+window.loadCardHelpers = async () => ({ createCardElement: (c) => { const d = document.createElement("div"); d.style.cssText = "padding:12px;border:1px solid #333;border-radius:12px;background:#1c1f24;font:12px monospace;white-space:pre-wrap"; d.textContent = "SCHEDA HA: " + JSON.stringify(c).slice(0, 160); return d; } });
+// dashboard finta: una vista per stanza con le sue entità, più la vista generale
+const PIANI_PROVA = ((CASA.motore || {}).piani || ["terra"]);
+const meta = { ent: {} };
+for (const p of PIANI_PROVA) { try { Object.assign(meta.ent, (await (await fetch("./casa3d/casa_" + p + ".json")).json()).ent); } catch (e) {} }
+const perStanza = {};
+for (const [k, m] of Object.entries(meta.ent)) { const e = (CASA.entita || {})[k]; if (e) (perStanza[m.stanza] = perStanza[m.stanza] || []).push(e); }
+const views = [{ path: "home", sections: [{ cards: [{ type: "heading", heading: "SCENE" }, { type: "tile", entity: "script.esempio" }] }, { cards: [{ type: "heading", heading: "METEO" }, { type: "tile", entity: "weather.casa" }] }] }];
+for (const [stanza, vista] of Object.entries(CASA.viste || {})) if (!views.some((v) => v.path === vista)) views.push({ path: vista, sections: [{ cards: [{ type: "heading", heading: "LUCI" }, ...(perStanza[stanza] || []).map((e) => ({ type: "tile", entity: e }))] }] });
+const callWS = async () => ({ views });
+const nuovo = () => ({ callWS, states: new Proxy({ ...stati }, { get: (o, k) => o[k] || (typeof k === "string" && k.includes(".") ? st(k) : undefined) }), callService });
+const cinema = {};
+function callService(d, s, data) {
+  if (d === "system_log") { log("registro: " + data.message.slice(0, 200)); return Promise.resolve(); }
+  const e = data.entity_id, x = st(e); log(`callService ${d}.${s} ${e} ${JSON.stringify({ ...data, entity_id: undefined })}`);
+  if (s === "toggle") { x.state = x.state === "on" ? "off" : "on"; if (x.state === "on" && d === "light") x.attributes = { ...x.attributes, brightness: 200 }; }
+  if (s === "open_cover") { x.state = "open"; x.attributes = { ...x.attributes, current_position: 100 }; }
+  if (s === "close_cover") { x.state = "closed"; x.attributes = { ...x.attributes, current_position: 0 }; }
+  if (s === "media_play_pause") x.state = x.state === "playing" ? "paused" : "playing";
+  if (s === "turn_on") { x.state = "on"; if (d === "light") x.attributes = { ...x.attributes, brightness: data.brightness_pct != null ? Math.round(data.brightness_pct * 2.55) : x.attributes.brightness || 200 }; }
+  if (s === "turn_off") x.state = "off";
+  if (s === "set_temperature") x.attributes = { ...x.attributes, temperature: data.temperature, hvac_action: data.temperature > x.attributes.current_temperature ? "heating" : "idle" };
+  if (s === "set_hvac_mode") { x.state = data.hvac_mode; x.attributes = { ...x.attributes, hvac_action: data.hvac_mode === "off" ? "off" : data.hvac_mode === "cool" ? "cooling" : "heating" }; }
+  if (s === "set_cover_position") { x.state = data.position > 0 ? "open" : "closed"; x.attributes = { ...x.attributes, current_position: data.position }; }
+  if (s === "set_percentage") { x.state = data.percentage > 0 ? "on" : "off"; x.attributes = { ...x.attributes, percentage: data.percentage }; }
+  if (s === "volume_set") x.attributes = { ...x.attributes, volume_level: data.volume_level };
+  if (s === "set_value") x.state = String(data.value);
+  if (s === "start") x.state = "cleaning";
+  if (s === "return_to_base") x.state = "returning";
+  stati[e] = { ...x };
+  // come l'automazione di HA della casa vera: proiettore acceso = telo giù (tenda chiusa), spento = telo su
+  for (const [k, ent] of Object.entries(CASA.entita || {})) if (k.startsWith("proiettore:") && ent === e) {
+    const telo = (CASA.entita || {})["telo:telo_" + k.slice(11)]; if (!telo) continue;
+    const t = st(telo), giu = x.state === "on"; stati[telo] = { ...t, state: giu ? "closed" : "open", attributes: { ...t.attributes, current_position: giu ? 0 : 100 } };
+    log(`automazione finta: ${telo} ${giu ? "giù" : "su"}`); }
+  // modalità cinema (come la seconda automazione di HA, con una scena temporanea): proiettore acceso = si spengono le luci
+  // accese della sua zona (l'open space intero se la stanza è unita ad altre); spento = si riaccendono solo quelle, come erano
+  for (const [k, ent] of Object.entries(CASA.entita || {})) if (k.startsWith("proiettore:") && ent === e) {
+    const st0 = k.slice(11), zona = new Set((CASA.stanze_unite || []).find((g) => g.includes(st0)) || [st0]);
+    const luciZona = Object.entries(meta.ent).filter(([kk, m]) => zona.has(m.stanza) && typeof (CASA.entita || {})[kk] === "string" && CASA.entita[kk].startsWith("light.")).map(([kk]) => CASA.entita[kk]);
+    if (x.state === "on") { cinema[e] = luciZona.filter((l) => st(l).state === "on").map((l) => ({ ...st(l) }));
+      for (const l of cinema[e]) stati[l.entity_id] = { ...l, state: "off" }; log(`cinema: spente ${cinema[e].length} luci`); }
+    else if (cinema[e]) { for (const l of cinema[e]) stati[l.entity_id] = { ...l }; log(`cinema: riaccese ${cinema[e].length} luci`); delete cinema[e]; } }
+  setTimeout(() => (card.hass = nuovo()), 150);
+  return Promise.resolve();
+}
+window.addEventListener("hass-more-info", (ev) => { log("more-info " + ev.detail.entityId); document.getElementById("infoEnt").textContent = ev.detail.entityId; document.getElementById("info").classList.add("vis"); });
+card.setConfig({ stanze_da: "casa" });
+card.hass = nuovo();
+window.prova = { card, stati, st, aggiorna: () => (card.hass = nuovo()) };
+</script>
+</body>
+</html>

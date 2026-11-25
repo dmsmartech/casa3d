@@ -1,0 +1,159 @@
+{
+ "ent": {
+  "piantana": {
+   "stanza": "soggiorno",
+   "box": [
+    4.2,
+    1.4,
+    4.5,
+    4.6,
+    1.7,
+    4.9
+   ],
+   "luci": [
+    [
+     4.4,
+     1.5,
+     4.7
+    ]
+   ],
+   "col": [
+    1.0,
+    0.72,
+    0.42
+   ]
+  },
+  "sospensione": {
+   "stanza": "cucina",
+   "box": [
+    6.73,
+    1.501,
+    2.53,
+    7.07,
+    1.739,
+    2.87
+   ],
+   "luci": [
+    [
+     6.9,
+     1.5,
+     2.7
+    ]
+   ],
+   "col": [
+    1.0,
+    0.72,
+    0.42
+   ]
+  },
+  "striscia_cucina": {
+   "stanza": "cucina",
+   "box": [
+    8.9,
+    1.05,
+    0.5,
+    8.95,
+    1.07,
+    4.5
+   ],
+   "luci": [
+    [
+     8.75,
+     1.0,
+     2.5
+    ]
+   ],
+   "col": [
+    1.0,
+    0.8,
+    0.6
+   ]
+  },
+  "tv": {
+   "stanza": "soggiorno",
+   "box": [
+    1.55,
+    0.62,
+    0.18,
+    3.05,
+    1.48,
+    0.24
+   ]
+  },
+  "tenda:tenda_1": {
+   "stanza": "soggiorno",
+   "box": [
+    3.3,
+    0.02,
+    5.82,
+    3.6,
+    1.12,
+    5.95
+   ]
+  }
+ },
+ "stanze": {
+  "soggiorno": {
+   "box": [
+    0,
+    0.0,
+    0,
+    5.5,
+    2.4,
+    6
+   ]
+  },
+  "cucina": {
+   "box": [
+    5.5,
+    0.0,
+    0,
+    9,
+    2.4,
+    6
+   ]
+  }
+ },
+ "gruppi": {
+  "cucina": {
+   "strati": {
+    "giorno": 0.92785,
+    "sera": 0.27649,
+    "sospensione": 1.39939,
+    "striscia_cucina": 5.7214
+   },
+   "tris": 9414
+  },
+  "soggiorno": {
+   "strati": {
+    "giorno": 0.88546,
+    "sera": 0.25217,
+    "piantana": 2.51103
+   },
+   "tris": 25128
+  },
+  "facciata": {
+   "strati": {
+    "giorno": 0.79056,
+    "sera": 0.19871
+   },
+   "tris": 158
+  },
+  "esterno": {
+   "strati": {
+    "giorno": 0.79657,
+    "sera": 0.20206
+   },
+   "tris": 204
+  },
+  "tenda_1": {
+   "strati": {
+    "giorno": 0.57979,
+    "sera": 0.14044,
+    "piantana": 0.61849
+   },
+   "tris": 98
+  }
+ },
+ "porte": {}
+}

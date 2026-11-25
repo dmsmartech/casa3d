@@ -1,0 +1,59 @@
+.tre { position: absolute; inset: 0; animation: treIn .5s ease both; }
+@keyframes treIn { from { opacity: 0; } to { opacity: 1; } }
+.m3d-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 1025px) { .home .mapcard:has(.m3d) { display: flex; flex-direction: column; } .home .mapcard:has(.m3d) > .mapbox.m3d { flex: 1 1 auto; height: auto; min-height: clamp(380px, calc(100vh - 330px), 720px); } }
+.tre canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+.tre-attiva { position: absolute; left: 50%; top: 12px; z-index: 6; display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; white-space: nowrap; border: 0; border-radius: 999px; font: inherit; font-size: 12px; font-weight: 700; color: #fff; background: rgba(15,17,21,.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transform: translate(-50%, -6px); transition: opacity .25s, transform .25s; pointer-events: none; -webkit-tap-highlight-color: transparent; }
+.tre-attiva.vis { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.tre.attivo .tre-attiva { background: #FFDE59; color: #111; }
+.tre.attivo { touch-action: none; }
+.tre.attivo::after { content: ""; position: absolute; inset: 0; border: 2px solid #FFDE59; border-radius: inherit; pointer-events: none; z-index: 4; }
+.tre-et { position: absolute; inset: 0; pointer-events: none; }
+.tre-zoom { position: absolute; left: 50%; bottom: 18px; transform: translate(-50%, 6px); padding: 8px 14px; border-radius: 999px; background: rgba(15,17,21,.82); color: #fff; font-size: 13px; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; z-index: 5; backdrop-filter: blur(8px); }
+.tre-zoom.vis { opacity: 1; transform: translate(-50%, 0); }
+button, .tile, .stat, .scena, .chip3d, .m3d-st, .tre-luce, .spot { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.tre, .tre-et, .tre-luce, .m3d-st, .chip3d, .pop-tenda, .pop-atv { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.tre-et > button { position: absolute; left: 0; top: 0; pointer-events: auto; font: inherit; color: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.tre-luce { display: block; margin: -22px 0 0 -22px; width: 44px; height: 44px; padding: 0; background: none; border: 0; }
+.tre-luce i { display: block; width: 36px; height: 36px; margin: 4px; border-radius: 50%; flex: none; background: rgba(11, 14, 19, .62) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2V16h5v-.1c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center / 22px no-repeat; border: 1.5px solid rgba(255, 255, 255, .45); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background-color .25s, box-shadow .25s, border-color .25s; }
+.tre-luce.tv i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8'%3E%3Crect x='3' y='5' width='18' height='12' rx='1.5'/%3E%3Cpath d='M8 21h8'/%3E%3C/svg%3E"); }
+.tre-luce.cassa i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='7' y='3' width='10' height='18' rx='5'/%3E%3Ccircle cx='12' cy='14' r='2.5'/%3E%3Cpath d='M12 7.5v.5'/%3E%3C/svg%3E"); }
+.tre-luce.cassa.on i { background-color: #34c77b; box-shadow: 0 0 0 6px rgba(52, 199, 123, .25), 0 0 22px rgba(52, 199, 123, .7); }
+.tre-luce.fuoco i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linejoin='round'%3E%3Cpath d='M12 21c-3.5 0-6-2.4-6-5.6 0-3.4 3-5.2 3.6-8.9 2 1.2 3.2 3.2 3.4 5.2.8-.7 1.3-1.8 1.4-3 1.9 1.5 3.6 4 3.6 6.7C18 18.6 15.5 21 12 21z'/%3E%3C/svg%3E"); }
+.tre-luce.fuoco.on i { background-color: #ff7a1a; box-shadow: 0 0 0 6px rgba(255, 122, 26, .25), 0 0 26px rgba(255, 100, 20, .8); }
+.tre-luce.clima i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.5 4.5 12 7l2.5-2.5M9.5 19.5 12 17l2.5 2.5'/%3E%3C/svg%3E"); }
+.tre-luce.clima.on i { background-color: #3aa0ff; box-shadow: 0 0 0 6px rgba(58, 160, 255, .25), 0 0 22px rgba(58, 160, 255, .7); }
+.tre-luce.tenda i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M4 4h16M6 4c0 6 1 11 3 16M18 4c0 6-1 11-3 16'/%3E%3C/svg%3E"); }
+.tre-luce.on i { background-color: var(--sun, #ffc83d); border-color: #fff; box-shadow: 0 0 0 6px rgba(255, 200, 61, .25), 0 0 26px rgba(255, 170, 60, .8); }
+.tre-luce span { font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 10px; background: rgba(11, 14, 19, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); white-space: nowrap; }
+.tre-stanza { margin: 0; transition: opacity .25s; min-height: 40px; padding: 0 16px; border-radius: 20px; background: rgba(11, 14, 19, .7); border: 1.5px solid color-mix(in srgb, var(--sel, #ffc83d) 70%, transparent); font-weight: 700; font-size: 14px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.tre-stanza.altra { opacity: .82; font-size: 12px; min-height: 30px; padding: 0 10px; border-color: rgba(255, 255, 255, .35); }
+.tre-stanza.altra i { font-style: normal; color: var(--sel, #ffc83d); font-weight: 800; }
+@media (hover: hover) { .tre-stanza.altra:hover { opacity: 1; border-color: var(--sel, #ffc83d); } }
+.m3d-aiuto { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 3; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.75); background: rgba(11,14,19,.6); padding: 6px 12px; border-radius: 12px; pointer-events: none; transition: opacity .6s; white-space: nowrap; }
+.m3d-st b.nluci { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; background: var(--sel, #ffc83d); color: var(--sel-testo, #241703); font-size: 11px; font-weight: 800; }
+.m3d-carica { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 7px 14px; border-radius: 16px; background: rgba(11,14,19,.7); color: rgba(255,255,255,.8); font-size: 12px; font-weight: 600; }
+.tre-luce i { display: flex !important; align-items: center; justify-content: center; background-image: none !important; color: #fff; }
+.tre-luce i svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.tre-luce.on i { color: #241703; }
+.tre-luce.cassa.on i, .tre-luce.clima.on i, .tre-luce.fuoco.on i, .tre-luce.tv.on i { color: #fff; }
+.tre-luce.tv.on i { background-color: #3a7bff; box-shadow: 0 0 0 6px rgba(58, 123, 255, .25), 0 0 22px rgba(58, 123, 255, .7); }
+.tre-luce .nome { position: absolute; left: 50%; top: 44px; transform: translate(-50%, 4px); white-space: nowrap; font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 10px; background: rgba(11, 14, 19, .86); border: 1px solid rgba(255, 255, 255, .14); color: #fff; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index: 2; }
+@media (hover: hover) { .tre-luce:hover .nome { opacity: 1; transform: translate(-50%, 0); } .tre-luce:hover { z-index: 6; } }
+/* toccata (anche su iPad, dove non c'è hover): il nome compare per qualche secondo */
+.tre-luce.mostra .nome { opacity: 1; transform: translate(-50%, 0); }
+.tre-luce.mostra { z-index: 6; }
+.tre-luce.piccola { margin: -16px 0 0 -16px; width: 32px; height: 32px; }
+.tre-luce.piccola i { width: 28px; height: 28px; margin: 2px; border-width: 1.2px; }
+.tre-luce.piccola i svg { width: 16px; height: 16px; }
+.tre-luce.piccola .nome { top: 32px; }
+.tre-stanza { font-size: 13px; min-height: 36px; padding: 0 14px; display: inline-flex; align-items: center; gap: 7px; margin: 0; }
+.tre-stanza b { min-width: 20px; height: 20px; border-radius: 10px; background: var(--sel, #ffc83d); color: var(--sel-testo, #241703); font-size: 11.5px; display: grid; place-items: center; padding: 0 5px; }
+/* iPad/iPhone: niente vetro sfocato sopra la grafica 3D. Safari deve rileggere e sfocare la mappa sotto ogni icona
+   a ogni fotogramma: con 20 icone in Soggiorno la mappa si piantava. Sfondo pieno al suo posto. */
+@media (pointer: coarse) {
+  .m3d, .m3d * { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  /* solo le icone spente: quelle accese tengono il loro colore (giallo luce, verde cassa, blu clima, arancio fuoco) */
+  .m3d .tre-luce:not(.on) i, .m3d .tre-luce span, .m3d .tre-luce .nome, .m3d .tre-stanza, .m3d .tre-attiva, .m3d .tre-zoom { background-color: rgba(11, 14, 19, .86); }
+  .m3d .m3d-stanze { background-color: rgba(11, 14, 19, .9) !important; }
+}
